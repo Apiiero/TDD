@@ -1,0 +1,154 @@
+{
+  "type": "FeatureCollection",
+  "name": "reservoirs",
+  "title": "Réservoirs d'eau potable",
+  "description": "Réservoirs de stockage et d'équilibrage du réseau.",
+  "generated": "2026-10-27T13:06:24",
+  "modified": "2026-10-27T13:06:24",
+  "_cartoeau": {
+    "note": "Données fictives de démonstration — ECLA Lons Agglo",
+    "projection": "WGS84 (EPSG:4326), longitude/latitude (RFC 7946)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "RES-01",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.548,
+          46.681
+        ]
+      },
+      "properties": {
+        "nom": "Réservoir des Croisilles",
+        "secteur": "SEC-01",
+        "commune": "Lons-le-Saunier",
+        "capacite_m3": 3000,
+        "niveau_pct": 72,
+        "remplissage_m3": 2160,
+        "cote_alt_m": 305,
+        "mise_en_service": "1987",
+        "materiau": "Béton enterré",
+        "dernier_entretien": "12/03/2026",
+        "prochain_vide_sanitaire": "Novembre 2026",
+        "statut": "ok",
+        "photo": "reservoir-croisilles",
+        "notes": "Chlore résiduel : 0,32 mg/L — Analyses conformes (02/10/2026)",
+        "id": "RES-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES-02",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5565,
+          46.6985
+        ]
+      },
+      "properties": {
+        "nom": "Réservoir de Montciel",
+        "secteur": "SEC-02",
+        "commune": "Lons-le-Saunier",
+        "capacite_m3": 1500,
+        "niveau_pct": 58,
+        "remplissage_m3": 870,
+        "cote_alt_m": 322,
+        "mise_en_service": "1994",
+        "materiau": "Béton semi-enterré",
+        "dernier_entretien": "28/06/2026",
+        "prochain_vide_sanitaire": "Mars 2027",
+        "statut": "ok",
+        "photo": "reservoir-montciel",
+        "notes": "Flotteur de sécurité remplacé en juin 2026",
+        "id": "RES-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES-03",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.556,
+          46.652
+        ]
+      },
+      "properties": {
+        "nom": "Réservoir de la Combe",
+        "secteur": "SEC-03",
+        "commune": "Conliège",
+        "capacite_m3": 800,
+        "niveau_pct": 34,
+        "remplissage_m3": 272,
+        "cote_alt_m": 341,
+        "mise_en_service": "1975",
+        "materiau": "Béton enterré",
+        "dernier_entretien": "05/02/2025",
+        "prochain_vide_sanitaire": "Urgent — reporté",
+        "statut": "warn",
+        "photo": "reservoir-combe",
+        "notes": "⚠ Niveau bas récurrent en été — curage à programmer en priorité",
+        "id": "RES-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES-04",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.595,
+          46.683
+        ]
+      },
+      "properties": {
+        "nom": "Réservoir de Perrigny",
+        "secteur": "SEC-04",
+        "commune": "Perrigny",
+        "capacite_m3": 1200,
+        "niveau_pct": 81,
+        "remplissage_m3": 972,
+        "cote_alt_m": 298,
+        "mise_en_service": "2003",
+        "materiau": "Composite polyester",
+        "dernier_entretien": "17/09/2026",
+        "prochain_vide_sanitaire": "Septembre 2027",
+        "statut": "ok",
+        "photo": "reservoir-perrigny",
+        "notes": "Détection de fuite intégrée (compteur principal + analyse nocturne)",
+        "id": "RES-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES-05",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.508,
+          46.672
+        ]
+      },
+      "properties": {
+        "nom": "Réservoir du Bois de Ratilly",
+        "secteur": "SEC-05",
+        "commune": "Macornay",
+        "capacite_m3": 600,
+        "niveau_pct": 12,
+        "remplissage_m3": 72,
+        "cote_alt_m": 318,
+        "mise_en_service": "1969",
+        "materiau": "Maçonnerie",
+        "dernier_entretien": "22/11/2023",
+        "prochain_vide_sanitaire": "Hors délai",
+        "statut": "bad",
+        "photo": "reservoir-ratilly",
+        "notes": "🔴 Remplissage anormal — suspicion de fuite sur by-pass. Intervention équipe exploitation demandée.",
+        "id": "RES-05"
+      }
+    }
+  ]
+}

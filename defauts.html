@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Défauts &amp; anomalies — Carto'Eau ECLA Agglo</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚠️</text></svg>" />
+
+  <!-- Police -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/defauts.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ============ ÉCRAN DE CONNEXION (session admin requise) ============ -->
+  <div id="login-screen" class="login-screen">
+    <form id="login-form" class="login-card" autocomplete="off">
+      <div class="brand brand-login">
+        <div class="brand-logo" aria-hidden="true">
+          <span class="drop drop-a"></span>
+          <span class="drop drop-b"></span>
+          <span class="arc"></span>
+        </div>
+        <div class="brand-text"><strong>ECLA</strong><span>Lons · Agglo</span></div>
+      </div>
+      <h1>Défauts &amp; anomalies — Carto'Eau</h1>
+      <p class="login-sub">Le registre des défauts et l'acquêtement sont réservés au gestionnaire.<br>Connectez-vous pour accéder à la page.</p>
+
+      <label class="field"><span>Utilisateur</span>
+        <input type="text" id="login-user" placeholder="admin" required autofocus /></label>
+      <label class="field"><span>Mot de passe</span>
+        <input type="password" id="login-pass" placeholder="••••••" required /></label>
+
+      <div id="login-error" class="login-error" hidden>Identifiant ou mot de passe incorrect.</div>
+      <button type="submit" class="btn-primary btn-block">Se connecter</button>
+      <a class="login-back" href="index.html">← Retour à la carte</a>
+      <p class="login-hint">Démo : utilisateur <code>admin</code> / mot de passe <code>admin</code></p>
+    </form>
+  </div>
+
+  <!-- ============ APPLICATION REGISTRE DES DÉFAUTS ============ -->
+  <div id="app" hidden>
+    <header id="header">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <span class="drop drop-a"></span><span class="drop drop-b"></span><span class="arc"></span>
+        </div>
+        <div class="brand-text"><strong>ECLA</strong><span>Carto'Eau · Qualité</span></div>
+      </div>
+      <div class="header-title">
+        <h1>Défauts &amp; anomalies du réseau <span class="badge-no-code">Acquêtement</span></h1>
+        <p>Registre, suivi des interventions et historique des évènements</p>
+      </div>
+      <nav class="header-actions">
+        <a class="icon-btn" href="index.html" title="Retour à la carte">🗺</a>
+        <a class="icon-btn" href="admin.html" title="Interface d'administration">🔧</a>
+        <button id="btn-print" class="icon-btn" title="Imprimer le registre">🖨</button>
+        <button id="btn-logout" class="icon-btn" title="Se déconnecter">⏻</button>
+      </nav>
+    </header>
+
+    <main class="def-layout">
+
+      <!-- ---- Barre latérale : KPI + filtres ---- -->
+      <aside class="def-side">
+        <div class="adm-card">
+          <h3>Synthèse du registre</h3>
+          <div id="def-kpis" class="def-kpi-grid"></div>
+        </div>
+
+        <div class="adm-card">
+          <h3>Filtres</h3>
+          <label class="field"><span>Recherche libre</span>
+            <input type="search" id="f-q" placeholder="Réf., titre, ouvrage, commune…" /></label>
+          <label class="field"><span>Statut</span>
+            <select id="f-statut">
+              <option value="">Tous les statuts</option>
+              <option value="actifs">Actifs (ouverts + en cours)</option>
+              <option value="ouvert">Ouverts uniquement</option>
+              <option value="encours">En cours</option>
+              <option value="resolu">Résolus (acquittés)</option>
+              <option value="sanssuite">Classés sans suite</option>
+            </select></label>
+          <label class="field"><span>Gravité</span>
+            <select id="f-gravite">
+              <option value="">Toutes gravités</option>
+              <option value="critique">Critique</option>
+              <option value="majeur">Majeur</option>
+              <option value="mineur">Mineur</option>
+              <option value="info">Information</option>
+            </select></label>
+          <label class="field"><span>Type de défaut</span>
+            <select id="f-type"><option value="">Tous les types</option></select></label>
+          <label class="field"><span>Source</span>
+            <select id="f-source">
+              <option value="">Toutes sources</option>
+              <option value="auto">Détection automatique</option>
+              <option value="manuel">Signalement manuel</option>
+            </select></label>
+          <button id="btn-clear-filters" class="btn-secondary btn-block">✕ Réinitialiser les filtres</button>
+        </div>
+
+        <div class="adm-card">
+          <h3>Actions registre</h3>
+          <div class="setting-row col">
+            <button id="btn-export-registre" class="btn-primary">⬇ Exporter le registre (CSV)</button>
+            <button id="btn-export-histo" class="btn-secondary">⬇ Exporter l'historique (CSV)</button>
+            <button id="btn-reset-demo" class="btn-danger">♻ Réinitialiser au jeu de démo</button>
+          </div>
+          <p class="muted small">L'export CSV s'ouvre dans Excel/LibreOffice (séparateur « ; », encodage UTF-8).</p>
+        </div>
+      </aside>
+
+      <!-- ---- Contenu principal ---- -->
+      <section class="def-main">
+
+        <!-- ===== Vue liste des défauts ===== -->
+        <div id="view-liste">
+          <div class="panel-head">
+            <h2 id="liste-titre">Registre des défauts &amp; anomalies</h2>
+            <button id="btn-new-defaut" class="btn-primary">＋ Signaler un défaut</button>
+          </div>
+
+          <!-- Formulaire de signalement (no code) -->
+          <div id="new-defaut-card" class="adm-card new-defaut" hidden>
+            <h3>📝 Nouveau signalement</h3>
+            <form id="form-new-defaut" class="nd-grid" novalidate>
+              <label class="field"><span>Intitulé <em class="req">*</em></span>
+                <input name="titre" required placeholder="Ex. Débordement sur regard…" /></label>
+              <label class="field"><span>Gravité</span>
+                <select name="gravite"></select></label>
+              <label class="field"><span>Type de défaut</span>
+                <select name="type"></select></label>
+              <label class="field"><span>Catégorie</span>
+                <select name="categorie">
+                  <option>Réseau</option><option>Canalisation</option><option>Réservoir</option>
+                  <option>Station</option><option>Compteur</option><option>Bouche d'incendie</option>
+                  <option>Qualité de l'eau</option><option>Autre</option>
+                </select></label>
+              <label class="field"><span>Ouvrage / localisation concerné</span>
+                <input name="elementNom" placeholder="Ex. Réservoir de la Combe, DN80 rue… (ou vide)" /></label>
+              <label class="field"><span>Secteur</span>
+                <select name="secteur"><option value="">— Non précisé —</option></select></label>
+              <label class="field"><span>Commune</span>
+                <input name="commune" placeholder="Commune" /></label>
+              <label class="field"><span>Responsable / service</span>
+                <input name="responsable" placeholder="À qui confier le traitement ?" /></label>
+              <label class="field span2"><span>Description constatée</span>
+                <textarea name="description" rows="3" placeholder="Circonstances, constats de terrain, repérage…"></textarea></label>
+              <div class="nd-actions">
+                <button type="submit" class="btn-primary">💾 Enregistrer au registre</button>
+                <button type="button" id="btn-cancel-new" class="btn-secondary">Annuler</button>
+              </div>
+            </form>
+          </div>
+
+          <div id="def-liste" class="def-liste"></div>
+          <p id="aucun" class="muted center" hidden>Aucun défaut ne correspond aux filtres ✔</p>
+        </div>
+
+        <!-- ===== Vue détail d'un défaut (acquêtement + traçabilité) ===== -->
+        <div id="view-detail" hidden>
+          <div class="panel-head">
+            <button id="btn-back" class="btn-secondary">← Retour au registre</button>
+            <h2 id="detail-ref"></h2>
+          </div>
+          <div id="detail-body"></div>
+        </div>
+
+        <!-- ===== Historique global des évènements ===== -->
+        <div class="adm-card histo-card">
+          <h3>🕘 Historique des évènements <span class="muted small">(journal immuable — toutes opérations)</span></h3>
+          <div class="histo-tools">
+            <input type="search" id="histo-q" placeholder="Filtrer l'historique (réf., acteur, texte…)" />
+            <select id="histo-type">
+              <option value="">Tous les évènements</option>
+              <option value="creation">Créations / signalements</option>
+              <option value="statut">Changements de statut</option>
+              <option value="suppression">Suppressions</option>
+              <option value="systeme">Système</option>
+            </select>
+          </div>
+          <div class="histo-scroll">
+            <table class="histo-table">
+              <thead><tr><th>Date</th><th>Défaut</th><th>Type</th><th>Évènement</th><th>Acteur</th></tr></thead>
+              <tbody id="histo-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" hidden>✅ <span id="toast-text"></span></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/defauts.js"></script>
+  <script src="js/defauts-page.js"></script>
+</body>
+</html>

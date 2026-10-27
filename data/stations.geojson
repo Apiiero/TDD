@@ -1,0 +1,126 @@
+{
+  "type": "FeatureCollection",
+  "name": "stations",
+  "title": "Stations de traitement et de pompage",
+  "description": "Usines, stations de pompage et de surpression.",
+  "generated": "2026-10-27T13:06:24",
+  "modified": "2026-10-27T13:06:24",
+  "_cartoeau": {
+    "note": "Données fictives de démonstration — ECLA Lons Agglo",
+    "projection": "WGS84 (EPSG:4326), longitude/latitude (RFC 7946)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "STA-01",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.4975,
+          46.6585
+        ]
+      },
+      "properties": {
+        "nom": "Usine de traitement de l'Ain",
+        "secteur": "SEC-05",
+        "commune": "Montreal",
+        "type": "Traitement",
+        "capacite_m3j": 8500,
+        "debit_prod_m3h": 210,
+        "energie_kwh_m3": 0.42,
+        "mise_en_service": "1998",
+        "technologie": "Filtration sur charbon actif + désinfection UV/chlore",
+        "dernier_entretien": "08/08/2026",
+        "statut": "ok",
+        "photo": "station-traitement",
+        "mode_exploitation": "Automatique — supervision S²Eau",
+        "effectif": "2 agents / astreinte 7j/7",
+        "id": "STA-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "STA-02",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5545,
+          46.6735
+        ]
+      },
+      "properties": {
+        "nom": "Station de pompage Saint-Jean",
+        "secteur": "SEC-01",
+        "commune": "Lons-le-Saunier",
+        "type": "Pompage",
+        "capacite_m3j": 4200,
+        "debit_prod_m3h": 120,
+        "energie_kwh_m3": 0.31,
+        "mise_en_service": "2011",
+        "technologie": "2 pompes immergées 30 kW (1 travail + 1 secours), variateurs",
+        "dernier_entretien": "15/05/2026",
+        "statut": "ok",
+        "photo": "station-pompage",
+        "mode_exploitation": "Asservie au niveau réservoir Croisilles",
+        "effectif": "Télé-conduite",
+        "id": "STA-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "STA-03",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.602,
+          46.668
+        ]
+      },
+      "properties": {
+        "nom": "Surpression des Grands Boismuriens",
+        "secteur": "SEC-04",
+        "commune": "Montmorot",
+        "type": "Surpression",
+        "capacite_m3j": 1600,
+        "debit_prod_m3h": 55,
+        "energie_kwh_m3": 0.55,
+        "mise_en_service": "1990",
+        "technologie": "Station de surpression volumétrique, 3 pompes",
+        "dernier_entretien": "30/01/2025",
+        "statut": "warn",
+        "photo": "station-surpression",
+        "mode_exploitation": "Automatique — pressostat 3,2 bar",
+        "effectif": "Télé-conduite",
+        "id": "STA-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "STA-04",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.562,
+          46.6455
+        ]
+      },
+      "properties": {
+        "nom": "Point de reprise AEP Revigny",
+        "secteur": "SEC-03",
+        "commune": "Revigny",
+        "type": "Pompage",
+        "capacite_m3j": 900,
+        "debit_prod_m3h": 30,
+        "energie_kwh_m3": 0.48,
+        "mise_en_service": "1983",
+        "technologie": "Relèvement vers réservoir de la Combe, 1 pompe 15 kW",
+        "dernier_entretien": "19/09/2025",
+        "statut": "ok",
+        "photo": "station-revigny",
+        "mode_exploitation": "Horaires pleins délestage heures creuses",
+        "effectif": "Télé-conduite",
+        "id": "STA-04"
+      }
+    }
+  ]
+}

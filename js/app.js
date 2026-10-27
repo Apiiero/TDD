@@ -1,6 +1,8 @@
 /* =========================================================
    Carto'Eau — Application cartographique du réseau d'eau potable
    ECLA Lons Agglo — données fictives de démonstration
+   Les données proviennent de STORE (js/store.js) : elles incluent
+   d'éventuelles modifications réalisées via l'interface d'administration.
    ========================================================= */
 "use strict";
 
@@ -10,10 +12,18 @@ const fmt = (n, d = 0) =>
   n == null ? "—" : Number(n).toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
 
 const STATUT_LABEL = { ok: ["Conforme", "st-ok"], warn: ["À surveiller", "st-warn"], bad: ["Anomalie", "st-bad"] };
-const secteurById = (id) => DATASET.secteurs.find((s) => s.id === id);
+const secteurById = (id) => STORE.data.secteurs.find((s) => s.id === id);
 
 /* ---------------- Initialisation de la carte ---------------- */
-const map = L.map("map", { zoomControl: true, minZoom: 11, maxZoom: 19 }).setView(DATASET.center, DATASET.zoom);
+const paramsURL = new URLSearchParams(location.search);
+const vueInit = (() => {
+  const lat = parseFloat(paramsURL.get("lat")), lng = parseFloat(paramsURL.get("lng"));
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    return { center: [lat, lng], zoom: Math.min(19, parseInt(paramsURL.get("zoom"), 10) || 17) };
+  }
+  return { center: STORE.data.center, zoom: STORE.data.zoom };
+})();
+const map = L.map("map", { zoomControl: true, minZoom: 11, maxZoom: 19 }).setView(vueInit.center, vueInit.zoom);
 
 // Fond de plan OpenStreetMap classique (aucune clé API requise)
 const osmLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -30,7 +40,7 @@ const layers = {
   compteur:   L.layerGroup().addTo(map),
 };
 
-const registry = []; // index pour la recherche {type, nom, layer}
+let registry = []; // index pour la recherche {type, nom, obj}
 
 /* ---------------- Aides popup ---------------- */
 function row(k, v) { return `<tr><td>${k}</td><td>${v}</td></tr>`; }
@@ -46,154 +56,153 @@ function foot(id, secteurId) {
   return `<div class="popup-foot">${id}${s ? " · " + s.nom : ""}</div>`;
 }
 
-/* ---------------- Secteurs (polygones) ---------------- */
-DATASET.secteurs.forEach((sec) => {
-  const poly = L.polygon(sec.poly, {
-    color: sec.couleur, weight: 2.5, fillColor: sec.couleur, fillOpacity: 0.16, opacity: 0.9,
+/* ---------------- Rendu des couches (ré-exécuté à chaque modif admin) ---------------- */
+function renderAll() {
+  Object.values(layers).forEach((g) => g.clearLayers());
+  registry = [];
+
+  /* ---- Secteurs (polygones) ---- */
+  STORE.data.secteurs.forEach((sec) => {
+    const poly = L.polygon(sec.poly, {
+      color: sec.couleur, weight: 2.5, fillColor: sec.couleur, fillOpacity: 0.16, opacity: 0.9,
+    });
+
+    poly.on("mouseover", () => {
+      poly.setStyle({ fillOpacity: 0.34, weight: 4 });
+      setStatus(`Secteur : ${sec.nom} — ${sec.linéaire_km} km · ${fmt(sec.volume_m3j)} m³/j`);
+    });
+    poly.on("mouseout", () => poly.setStyle({ fillOpacity: 0.16, weight: 2.5 }));
+
+    const rendementCls = sec.rendement_pct >= 85 ? "st-ok" : sec.rendement_pct >= 80 ? "st-warn" : "st-bad";
+    poly.bindPopup(`<div class="popup">
+        <div class="popup-head"><span class="popup-badge">Secteur ${sec.code}</span></div>
+        <h3>${sec.nom}</h3>
+        <div class="pop-commune">${sec.commune}</div>
+        <table>
+          ${row("Identifiant", sec.id)}
+          ${row("Linéaire réseau", fmt(sec.linéaire_km, 1) + " km")}
+          ${row("Volume distribué", fmt(sec.volume_m3j) + " m³/j")}
+          ${row("Débit moyen", fmt(sec.debit_m3h) + " m³/h")}
+          ${row("Abonnés desservis", fmt(sec.abonnés))}
+          ${row("Pression moyenne", fmt(sec.pression_bar, 1) + " bar")}
+          ${row("Rendement réseau", `<span class="status-pill ${rendementCls}">${fmt(sec.rendement_pct, 1)} %</span>`)}
+          ${row("Fuites détectées (24 h)", sec.fuites_24h + " alerte(s)")}
+          ${row("Responsable secteur", sec.responsable)}
+          ${row("Télérelève", sec.teleinfo)}
+        </table>
+        ${foot(sec.id)}
+      </div>`, { maxWidth: 340 });
+
+    poly.addTo(layers.secteur);
+    registry.push({ type: "Secteur", nom: sec.nom, obj: poly });
   });
 
-  poly.on("mouseover", () => {
-    poly.setStyle({ fillOpacity: 0.34, weight: 4 });
-    setStatus(`Secteur : ${sec.nom} — ${sec.linéaire_km} km · ${fmt(sec.volume_m3j)} m³/j`);
+  /* ---- Canalisations ---- */
+  STORE.data.canalisations.forEach((c) => {
+    const line = L.polyline([c.a, c.b], c.type === "principale"
+      ? { color: "#1d7fd6", weight: 3.5, opacity: 0.85 }
+      : { color: "#6aa9dd", weight: 2.5, opacity: 0.8, dashArray: "7 6" });
+
+    line.bindTooltip(`${c.libelle} — ${c.dn}`, { sticky: true });
+    line.on("mouseover", () => setStatus(`Canalisation : ${c.libelle} (${c.dn})`));
+    line.addTo(layers.canalis);
   });
-  poly.on("mouseout", () => poly.setStyle({ fillOpacity: 0.16, weight: 2.5 }));
 
-  const rendementCls = sec.rendement_pct >= 85 ? "st-ok" : sec.rendement_pct >= 80 ? "st-warn" : "st-bad";
-  poly.bindPopup(`<div class="popup">
-      <div class="popup-head"><span class="popup-badge">Secteur ${sec.code}</span></div>
-      <h3>${sec.nom}</h3>
-      <div class="pop-commune">${sec.commune}</div>
-      <table>
-        ${row("Identifiant", sec.id)}
-        ${row("Linéaire réseau", fmt(sec.linéaire_km, 1) + " km")}
-        ${row("Volume distribué", fmt(sec.volume_m3j) + " m³/j")}
-        ${row("Débit moyen", fmt(sec.debit_m3h) + " m³/h")}
-        ${row("Abonnés desservis", fmt(sec.abonnés))}
-        ${row("Pression moyenne", fmt(sec.pression_bar, 1) + " bar")}
-        ${row("Rendement réseau", `<span class="status-pill ${rendementCls}">${fmt(sec.rendement_pct, 1)} %</span>`)}
-        ${row("Fuites détectées (24 h)", sec.fuites_24h + " alerte(s)")}
-        ${row("Responsable secteur", sec.responsable)}
-        ${row("Télérelève", sec.teleinfo)}
-      </table>
-      ${foot(sec.id)}
-    </div>`, { maxWidth: 340 });
+  /* ---- Réservoirs ---- */
+  STORE.data.reservoirs.forEach((r) => {
+    const sec = secteurById(r.secteur);
+    const m = L.marker(r.coord, { icon: makeIcon("mk-reservoir", "🛢", r.statut === "bad") });
 
-  poly.addTo(layers.secteur);
-  registry.push({ type: "Secteur", nom: sec.nom, obj: poly });
-});
+    m.bindPopup(`<div class="popup">
+        <div class="popup-head"><span class="popup-badge res">Réservoir</span>${statutPill(r.statut)}</div>
+        <h3>${r.nom}</h3>
+        <div class="pop-commune">${r.commune}</div>
+        <img class="popup-img" src="${fakePhotoSVG("reservoir", r.nom)}" alt="Illustration ${r.nom}" />
+        <table>
+          ${row("Capacité", fmt(r.capacite_m3) + " m³")}
+          ${row("Niveau actuel", `<div>${fmt(r.niveau_pct)} % · ${fmt(r.remplissage_m3)} m³${gauge(r.niveau_pct)}</div>`)}
+          ${row("Cote altimétrique", fmt(r.cote_alt_m) + " m NGF")}
+          ${row("Matériau", r.materiau)}
+          ${row("Mise en service", r.mise_en_service)}
+          ${row("Dernier entretien", r.dernier_entretien)}
+          ${row("Prochain vide sanitaire", r.prochain_vide_sanitaire)}
+          ${row("Qualité de l'eau", r.notes)}
+        </table>
+        ${foot(r.id, r.secteur)}
+      </div>`, { maxWidth: 360 });
 
-/* ---------------- Canalisations ---------------- */
-DATASET.canalisations.forEach((c) => {
-  const line = L.polyline([c.a, c.b], c.type === "principale"
-    ? { color: "#1d7fd6", weight: 3.5, opacity: 0.85 }
-    : { color: "#6aa9dd", weight: 2.5, opacity: 0.8, dashArray: "7 6" });
-
-  line.bindTooltip(`${c.libelle} — ${c.dn}`, { sticky: true });
-  line.on("mouseover", () => setStatus(`Canalisation : ${c.libelle} (${c.dn})`));
-  line.addTo(layers.canalis);
-});
-
-/* ---------------- Marqueurs génériques ---------------- */
-function makeIcon(cls, glyph, pulse) {
-  return L.divIcon({
-    className: "", iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -16],
-    html: `<div class="mk ${cls}${pulse ? " mk-pulse" : ""}">${glyph}</div>`,
+    m.on("mouseover", () => setStatus(`Réservoir : ${r.nom} — niveau ${r.niveau_pct} %`));
+    if (sec) m.on("click", () => highlightSectorChip(sec.id));
+    m.addTo(layers.reservoir);
+    registry.push({ type: "Réservoir", nom: r.nom, obj: m });
   });
+
+  /* ---- Stations ---- */
+  STORE.data.stations.forEach((s) => {
+    const m = L.marker(s.coord, { icon: makeIcon("mk-station", "⚙", s.statut === "warn") });
+
+    m.bindPopup(`<div class="popup">
+        <div class="popup-head"><span class="popup-badge sta">Station ${s.type.toLowerCase()}</span>${statutPill(s.statut)}</div>
+        <h3>${s.nom}</h3>
+        <div class="pop-commune">${s.commune}</div>
+        <img class="popup-img" src="${fakePhotoSVG("station", s.nom)}" alt="Illustration ${s.nom}" />
+        <table>
+          ${row("Type d'ouvrage", s.type)}
+          ${row("Capacité nominale", fmt(s.capacite_m3j) + " m³/j")}
+          ${row("Débit de production", fmt(s.debit_prod_m3h) + " m³/h")}
+          ${row("Énergie spécifique", fmt(s.energie_kwh_m3, 2) + " kWh/m³")}
+          ${row("Procédé / équipement", s.technologie)}
+          ${row("Mise en service", s.mise_en_service)}
+          ${row("Dernier entretien", s.dernier_entretien)}
+          ${row("Mode d'exploitation", s.mode_exploitation)}
+          ${row("Personnel", s.effectif)}
+        </table>
+        ${foot(s.id, s.secteur)}
+      </div>`, { maxWidth: 360 });
+
+    m.on("mouseover", () => setStatus(`Station : ${s.nom} (${s.type})`));
+    m.addTo(layers.station);
+    registry.push({ type: "Station", nom: s.nom, obj: m });
+  });
+
+  /* ---- Compteurs de sectorisation ---- */
+  STORE.data.compteurs.forEach((c) => {
+    const sec = secteurById(c.secteur);
+    const m = L.marker(c.coord, { icon: makeIcon("mk-compteur", "◉", c.statut !== "ok") });
+
+    const delta = c.index_m3 - c.index_precedent_m3;
+    const qmn = c.qmin_nocturne_m3h == null ? "Non pertinent (transfert)" : fmt(c.qmin_nocturne_m3h, 1) + " m³/h";
+    const alerteHtml = c.alerte
+      ? `<tr><td colspan="2" style="color:var(--bad);text-align:left;padding-top:8px">⚠ ${c.alerte}</td></tr>` : "";
+
+    m.bindPopup(`<div class="popup">
+        <div class="popup-head"><span class="popup-badge cpt">Compteur sectorisation</span>${statutPill(c.statut)}</div>
+        <h3>${c.nom}</h3>
+        <div class="pop-commune">${c.commune}${sec ? " — " + sec.nom : ""}</div>
+        <table>
+          ${row("Identifiant", `<code>${c.identifiant}</code>`)}
+          ${row("Type", c.type_compteur)}
+          ${row("Diamètre", "DN " + c.diametre_mm)}
+          ${row("Index cumulé", `<div>${fmt(c.index_m3)} m³<div style="font-weight:400;color:var(--muted);font-size:.72rem">précédent : ${fmt(c.index_precedent_m3)} m³ (+${fmt(delta)} m³)</div></div>`)}
+          ${row("Débit moyen", fmt(c.debit_moyen_m3h) + " m³/h")}
+          ${row("QMn (débit nocturne)", qmn)}
+          ${row("Débit de pointe jour", fmt(c.qmax_jour_m3h) + " m³/h")}
+          ${row("Dernière relève", c.derniere_releve)}
+          ${row("Fréquence", c.frequence_releve)}
+          ${row("Batterie télécom", `${fmt(c.batterie_pct)} %${gauge(c.batterie_pct)}`)}
+          ${alerteHtml}
+        </table>
+        ${foot(c.id, c.secteur)}
+      </div>`, { maxWidth: 360 });
+
+    m.on("mouseover", () => setStatus(`Compteur : ${c.identifiant} — QMn ${qmn}`));
+    m.addTo(layers.compteur);
+    registry.push({ type: "Compteur", nom: c.nom + " (" + c.identifiant + ")", obj: m });
+  });
+
+  buildDashboard();
+  applyLayerFilters();
 }
-
-/* ---------------- Réservoirs ---------------- */
-DATASET.reservoirs.forEach((r) => {
-  const sec = secteurById(r.secteur);
-  const m = L.marker(r.coord, { icon: makeIcon("mk-reservoir", "🛢", r.statut === "bad") });
-
-  m.bindPopup(`<div class="popup">
-      <div class="popup-head"><span class="popup-badge res">Réservoir</span>${statutPill(r.statut)}</div>
-      <h3>${r.nom}</h3>
-      <div class="pop-commune">${r.commune}</div>
-      <img class="popup-img" src="${fakePhotoSVG("reservoir", r.nom)}" alt="Illustration ${r.nom}" />
-      <table>
-        ${row("Capacité", fmt(r.capacite_m3) + " m³")}
-        ${row("Niveau actuel", `<div>${fmt(r.niveau_pct)} % · ${fmt(r.remplissage_m3)} m³${gauge(r.niveau_pct)}</div>`)}
-        ${row("Cote altimétrique", fmt(r.cote_alt_m) + " m NGF")}
-        ${row("Matériau", r.materiau)}
-        ${row("Mise en service", r.mise_en_service)}
-        ${row("Dernier entretien", r.dernier_entretien)}
-        ${row("Prochain vide sanitaire", r.prochain_vide_sanitaire)}
-        ${row("Qualité de l'eau", r.notes)}
-      </table>
-      ${foot(r.id, r.secteur)}
-    </div>`, { maxWidth: 360 });
-
-  m.on("mouseover", () => setStatus(`Réservoir : ${r.nom} — niveau ${r.niveau_pct} %`));
-  if (sec) m.on("click", () => highlightSectorChip(sec.id));
-  m.addTo(layers.reservoir);
-  registry.push({ type: "Réservoir", nom: r.nom, obj: m });
-});
-
-/* ---------------- Stations ---------------- */
-DATASET.stations.forEach((s) => {
-  const m = L.marker(s.coord, { icon: makeIcon("mk-station", "⚙", s.statut === "warn") });
-
-  m.bindPopup(`<div class="popup">
-      <div class="popup-head"><span class="popup-badge sta">Station ${s.type.toLowerCase()}</span>${statutPill(s.statut)}</div>
-      <h3>${s.nom}</h3>
-      <div class="pop-commune">${s.commune}</div>
-      <img class="popup-img" src="${fakePhotoSVG("station", s.nom)}" alt="Illustration ${s.nom}" />
-      <table>
-        ${row("Type d'ouvrage", s.type)}
-        ${row("Capacité nominale", fmt(s.capacite_m3j) + " m³/j")}
-        ${row("Débit de production", fmt(s.debit_prod_m3h) + " m³/h")}
-        ${row("Énergie spécifique", fmt(s.energie_kwh_m3, 2) + " kWh/m³")}
-        ${row("Procédé / équipement", s.technologie)}
-        ${row("Mise en service", s.mise_en_service)}
-        ${row("Dernier entretien", s.dernier_entretien)}
-        ${row("Mode d'exploitation", s.mode_exploitation)}
-        ${row("Personnel", s.effectif)}
-      </table>
-      ${foot(s.id, s.secteur)}
-    </div>`, { maxWidth: 360 });
-
-  m.on("mouseover", () => setStatus(`Station : ${s.nom} (${s.type})`));
-  m.addTo(layers.station);
-  registry.push({ type: "Station", nom: s.nom, obj: m });
-});
-
-/* ---------------- Compteurs de sectorisation ---------------- */
-DATASET.compteurs.forEach((c) => {
-  const sec = secteurById(c.secteur);
-  const m = L.marker(c.coord, {
-    icon: makeIcon("mk-compteur", "◉", c.statut !== "ok"),
-  });
-
-  const delta = c.index_m3 - c.index_precedent_m3;
-  const qmn = c.qmin_nocturne_m3h == null ? "Non pertinent (transfert)" : fmt(c.qmin_nocturne_m3h, 1) + " m³/h";
-  const alerteHtml = c.alerte
-    ? `<tr><td colspan="2" style="color:var(--bad);text-align:left;padding-top:8px">⚠ ${c.alerte}</td></tr>` : "";
-
-  m.bindPopup(`<div class="popup">
-      <div class="popup-head"><span class="popup-badge cpt">Compteur sectorisation</span>${statutPill(c.statut)}</div>
-      <h3>${c.nom}</h3>
-      <div class="pop-commune">${c.commune}${sec ? " — " + sec.nom : ""}</div>
-      <table>
-        ${row("Identifiant", `<code>${c.identifiant}</code>`)}
-        ${row("Type", c.type_compteur)}
-        ${row("Diamètre", "DN " + c.diametre_mm)}
-        ${row("Index cumulé", `<div>${fmt(c.index_m3)} m³<div style="font-weight:400;color:var(--muted);font-size:.72rem">précédent : ${fmt(c.index_precedent_m3)} m³ (+${fmt(delta)} m³)</div></div>`)}
-        ${row("Débit moyen", fmt(c.debit_moyen_m3h) + " m³/h")}
-        ${row("QMn (débit nocturne)", qmn)}
-        ${row("Débit de pointe jour", fmt(c.qmax_jour_m3h) + " m³/h")}
-        ${row("Dernière relève", c.derniere_releve)}
-        ${row("Fréquence", c.frequence_releve)}
-        ${row("Batterie télécom", `${fmt(c.batterie_pct)} %${gauge(c.batterie_pct)}`)}
-        ${alerteHtml}
-      </table>
-      ${foot(c.id, c.secteur)}
-    </div>`, { maxWidth: 360 });
-
-  m.on("mouseover", () => setStatus(`Compteur : ${c.identifiant} — QMn ${qmn}`));
-  m.addTo(layers.compteur);
-  registry.push({ type: "Compteur", nom: c.nom + " (" + c.identifiant + ")", obj: m });
-});
 
 /* ---------------- Bandeau de statut ---------------- */
 const statusEl = $("#status-hover");
@@ -205,12 +214,20 @@ map.on("mousemove", (e) => {
 });
 map.on("mouseout", () => setStatus(defaultStatus));
 
+/* ---------------- Marqueurs génériques ---------------- */
+function makeIcon(cls, glyph, pulse) {
+  return L.divIcon({
+    className: "", iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -16],
+    html: `<div class="mk ${cls}${pulse ? " mk-pulse" : ""}">${glyph}</div>`,
+  });
+}
+
 /* ---------------- Tableau de bord latéral ---------------- */
 function buildDashboard() {
-  const totLen = DATASET.secteurs.reduce((a, s) => a + s.linéaire_km, 0);
-  const totVol = DATASET.secteurs.reduce((a, s) => a + s.volume_m3j, 0);
-  const totAbo = DATASET.secteurs.reduce((a, s) => a + s.abonnés, 0);
-  const totRes = DATASET.reservoirs.reduce((a, r) => a + r.capacite_m3, 0);
+  const totLen = STORE.data.secteurs.reduce((a, s) => a + s.linéaire_km, 0);
+  const totVol = STORE.data.secteurs.reduce((a, s) => a + s.volume_m3j, 0);
+  const totAbo = STORE.data.secteurs.reduce((a, s) => a + s.abonnés, 0);
+  const totRes = STORE.data.reservoirs.reduce((a, r) => a + r.capacite_m3, 0);
 
   $("#kpi-len").textContent = fmt(totLen, 1) + " km";
   $("#kpi-vol").textContent = fmt(totVol) + " m³";
@@ -219,14 +236,14 @@ function buildDashboard() {
 
   const ul = $("#sector-list");
   ul.innerHTML = "";
-  DATASET.secteurs.forEach((s) => {
+  STORE.data.secteurs.forEach((s) => {
     const li = document.createElement("li");
     li.className = "sector-item";
     li.dataset.sector = s.id;
     li.innerHTML = `
       <span class="sector-chip" style="background:${s.couleur}"></span>
       <span class="sector-name">${s.nom}</span>
-      <span class="sector-meta">${fmt(s.volume_m3j)} m³/j · ${s.rendement_pct.toFixed(0)} %</span>`;
+      <span class="sector-meta">${fmt(s.volume_m3j)} m³/j · ${Number(s.rendement_pct).toFixed(0)} %</span>`;
     li.addEventListener("click", () => {
       const layer = registry.find((r) => r.nom === s.nom);
       if (layer) {
@@ -242,13 +259,16 @@ function highlightSectorChip(id) {
   document.querySelectorAll(".sector-item").forEach((el) =>
     el.classList.toggle("active", el.dataset.sector === id));
 }
-buildDashboard();
 
 /* ---------------- Filtres ---------------- */
-["secteur", "canalis", "reservoir", "station", "compteur"].forEach((k) => {
-  $("#flt-" + k).addEventListener("change", (e) => {
-    e.target.checked ? map.addLayer(layers[k]) : map.removeLayer(layers[k]);
+function applyLayerFilters() {
+  ["secteur", "canalis", "reservoir", "station", "compteur"].forEach((k) => {
+    const cb = $("#flt-" + k);
+    cb.checked ? map.addLayer(layers[k]) : map.removeLayer(layers[k]);
   });
+}
+["secteur", "canalis", "reservoir", "station", "compteur"].forEach((k) => {
+  $("#flt-" + k).addEventListener("change", applyLayerFilters);
 });
 
 /* ---------------- Recherche ---------------- */
@@ -301,3 +321,10 @@ $("#panel-toggle").addEventListener("click", () => $("#sidebar").classList.toggl
 
 /* Cacher le panneau mobile quand on clique la carte */
 map.on("click", () => $("#sidebar").classList.remove("open"));
+
+/* ---------------- Rendu initial + réactivité aux modifications admin ---------------- */
+renderAll();
+STORE.subscribe(() => renderAll());
+
+// Si l'admin a modifié les données dans un autre onglet, rafraîchir aussi
+window.addEventListener("storage", (e) => { if (e.key === "cartoeau_overrides_v1") location.reload(); });

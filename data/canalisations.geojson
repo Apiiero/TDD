@@ -1,0 +1,405 @@
+{
+  "type": "FeatureCollection",
+  "name": "canalisations",
+  "title": "Canalisations principales",
+  "description": "Colonnes d'alimentation, aménées et antennes de distribution.",
+  "generated": "2026-10-27T13:06:24",
+  "modified": "2026-10-27T13:06:24",
+  "_cartoeau": {
+    "note": "Données fictives de démonstration — ECLA Lons Agglo",
+    "projection": "WGS84 (EPSG:4326), longitude/latitude (RFC 7946)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "CAN-01",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.4975,
+            46.6585
+          ],
+          [
+            5.516,
+            46.662
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN150",
+        "libelle": "Transfert usine → ville",
+        "id": "CAN-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-02",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.516,
+            46.662
+          ],
+          [
+            5.508,
+            46.672
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN80",
+        "libelle": "Alimentation réservoir Ratilly",
+        "id": "CAN-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-03",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.516,
+            46.662
+          ],
+          [
+            5.545,
+            46.676
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN150",
+        "libelle": "Aménée vers compteur Centre",
+        "id": "CAN-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-04",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.545,
+            46.676
+          ],
+          [
+            5.548,
+            46.681
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN110",
+        "libelle": "Alimentation réservoir Croisilles",
+        "id": "CAN-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-05",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.548,
+            46.681
+          ],
+          [
+            5.5545,
+            46.6735
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN100",
+        "libelle": "Refoulement pompage Saint-Jean",
+        "id": "CAN-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-06",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.545,
+            46.676
+          ],
+          [
+            5.56,
+            46.69
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN80",
+        "libelle": "Distribution Nord",
+        "id": "CAN-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-07",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.56,
+            46.69
+          ],
+          [
+            5.5565,
+            46.6985
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN80",
+        "libelle": "Alimentation réservoir Montciel",
+        "id": "CAN-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-08",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.545,
+            46.676
+          ],
+          [
+            5.55,
+            46.656
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN80",
+        "libelle": "Descente vers secteur Sud",
+        "id": "CAN-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-09",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.55,
+            46.656
+          ],
+          [
+            5.556,
+            46.652
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN60",
+        "libelle": "Remplissage réservoir de la Combe",
+        "id": "CAN-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-10",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.556,
+            46.652
+          ],
+          [
+            5.562,
+            46.6455
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN50",
+        "libelle": "Reprise Revigny",
+        "id": "CAN-10"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-11",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.545,
+            46.676
+          ],
+          [
+            5.583,
+            46.678
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN100",
+        "libelle": "Antenne Est — Perrigny",
+        "id": "CAN-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-12",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.583,
+            46.678
+          ],
+          [
+            5.595,
+            46.683
+          ]
+        ]
+      },
+      "properties": {
+        "type": "principale",
+        "dn": "DN100",
+        "libelle": "Alimentation réservoir Perrigny",
+        "id": "CAN-12"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-13",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.583,
+            46.678
+          ],
+          [
+            5.602,
+            46.668
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN60",
+        "libelle": "Surpression Montmorot",
+        "id": "CAN-13"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-14",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.602,
+            46.668
+          ],
+          [
+            5.595,
+            46.683
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN50",
+        "libelle": "Équilibre Grands Boismuriens",
+        "id": "CAN-14"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-15",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.56,
+            46.69
+          ],
+          [
+            5.583,
+            46.678
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN60",
+        "libelle": "Bouclage Nord–Est",
+        "id": "CAN-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-16",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.55,
+            46.656
+          ],
+          [
+            5.523,
+            46.669
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN60",
+        "libelle": "Bouclage Sud–Ouest",
+        "id": "CAN-16"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAN-17",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.523,
+            46.669
+          ],
+          [
+            5.508,
+            46.672
+          ]
+        ]
+      },
+      "properties": {
+        "type": "antenne",
+        "dn": "DN60",
+        "libelle": "Alimentation Macornay",
+        "id": "CAN-17"
+      }
+    }
+  ]
+}

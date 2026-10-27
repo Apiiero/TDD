@@ -1,0 +1,189 @@
+{
+  "type": "FeatureCollection",
+  "name": "compteurs",
+  "title": "Compteurs de sectorisation (FDI)",
+  "description": "Points de comptage général de secteur, avec QMn et index.",
+  "generated": "2026-10-27T13:06:24",
+  "modified": "2026-10-27T13:08:23",
+  "_cartoeau": {
+    "note": "Données fictives de démonstration — ECLA Lons Agglo",
+    "projection": "WGS84 (EPSG:4326), longitude/latitude (RFC 7946)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "cpt-CEN",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.545,
+          46.676
+        ]
+      },
+      "properties": {
+        "nom": "Compteur général Centre",
+        "identifiant": "QMA-3821-CEN",
+        "secteur": "SEC-01",
+        "commune": "Lons-le-Saunier",
+        "diametre_mm": 110,
+        "type_compteur": "Magnétique QMA",
+        "index_m3": 4128750,
+        "index_precedent_m3": 4111020,
+        "debit_moyen_m3h": 77,
+        "qmin_nocturne_m3h": 9.4,
+        "qmax_jour_m3h": 168,
+        "derniere_releve": "25/10/2026 06:00",
+        "frequence_releve": "1 point / 10 min",
+        "statut": "ok",
+        "batterie_pct": 91,
+        "id": "cpt-CEN"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cpt-NOR",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.56,
+          46.69
+        ]
+      },
+      "properties": {
+        "nom": "Compteur secteur Nord",
+        "identifiant": "QMC-1044-NOR",
+        "secteur": "SEC-02",
+        "commune": "Lons-le-Saunier",
+        "diametre_mm": 80,
+        "type_compteur": "Vortex ultrasons",
+        "index_m3": 2015330,
+        "index_precedent_m3": 2004610,
+        "debit_moyen_m3h": 46,
+        "qmin_nocturne_m3h": 6.1,
+        "qmax_jour_m3h": 102,
+        "derniere_releve": "25/10/2026 05:58",
+        "frequence_releve": "1 point / 15 min",
+        "statut": "ok",
+        "batterie_pct": 87,
+        "id": "cpt-NOR"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cpt-SUD",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.55,
+          46.656
+        ]
+      },
+      "properties": {
+        "nom": "Compteur secteur Sud",
+        "identifiant": "QMA-2260-SUD",
+        "secteur": "SEC-03",
+        "commune": "Conliège",
+        "diametre_mm": 80,
+        "type_compteur": "Magnétique QMA",
+        "index_m3": 1330890,
+        "index_precedent_m3": 1324310,
+        "debit_moyen_m3h": 32,
+        "qmin_nocturne_m3h": 4.8,
+        "qmax_jour_m3h": 71,
+        "derniere_releve": "25/10/2026 06:02",
+        "frequence_releve": "1 point / 15 min",
+        "statut": "ok",
+        "batterie_pct": 76,
+        "id": "cpt-SUD"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cpt-EST",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.583,
+          46.678
+        ]
+      },
+      "properties": {
+        "nom": "Compteur secteur Est",
+        "identifiant": "VOR-9917-EST",
+        "secteur": "SEC-04",
+        "commune": "Perrigny",
+        "diametre_mm": 100,
+        "type_compteur": "Vortex ultrasons",
+        "index_m3": 1762045,
+        "index_precedent_m3": 1753215,
+        "debit_moyen_m3h": 40,
+        "qmin_nocturne_m3h": 11.2,
+        "qmax_jour_m3h": 94,
+        "derniere_releve": "25/10/2026 06:01",
+        "frequence_releve": "1 point / 10 min",
+        "statut": "warn",
+        "batterie_pct": 34,
+        "alerte": "QMn en hausse (+38 % vs moyenne 30 j) — suspicion de fuite cachée",
+        "id": "cpt-EST"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cpt-OUE",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.523,
+          46.669
+        ]
+      },
+      "properties": {
+        "nom": "Compteur secteur Ouest",
+        "identifiant": "QMA-5533-OUE",
+        "secteur": "SEC-05",
+        "commune": "Macornay",
+        "diametre_mm": 60,
+        "type_compteur": "Magnétique QMA",
+        "index_m3": 986420,
+        "index_precedent_m3": 981760,
+        "debit_moyen_m3h": 22,
+        "qmin_nocturne_m3h": 3.1,
+        "qmax_jour_m3h": 51,
+        "derniere_releve": "25/10/2026 05:57",
+        "frequence_releve": "1 point / 15 min",
+        "statut": "ok",
+        "batterie_pct": 95,
+        "id": "cpt-OUE"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cpt-DIT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.516,
+          46.662
+        ]
+      },
+      "properties": {
+        "nom": "Compteur de transfert Usine → Ville",
+        "identifiant": "ULS-7702-DIT",
+        "secteur": "SEC-05",
+        "commune": "Montreal",
+        "diametre_mm": 150,
+        "type_compteur": "Ultra-sons DN150",
+        "index_m3": 12405680,
+        "index_precedent_m3": 12397180,
+        "debit_moyen_m3h": 210,
+        "qmin_nocturne_m3h": null,
+        "qmax_jour_m3h": 262,
+        "derniere_releve": "25/10/2026 06:03",
+        "frequence_releve": "1 point / 5 min",
+        "statut": "ok",
+        "batterie_pct": 88,
+        "id": "cpt-DIT"
+      }
+    }
+  ]
+}
