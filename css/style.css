@@ -89,6 +89,23 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 }
 .icon-btn:hover { background: rgba(255,255,255,.22); }
 
+/* Bouton "Administration" en haut à droite */
+.btn-admin {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 38px; padding: 0 14px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.35);
+  background: linear-gradient(135deg, #1b6ca8, #17a2b8);
+  color: #fff; font-size: .85rem; font-weight: 600; text-decoration: none;
+  white-space: nowrap; cursor: pointer; transition: filter .15s, transform .1s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+.btn-admin:hover { filter: brightness(1.12); }
+.btn-admin:active { transform: translateY(1px); }
+@media (max-width: 720px) {
+  .btn-admin { padding: 0 10px; font-size: 0; }        /* icône seule sur mobile */
+  .btn-admin::before { content: "🔐"; font-size: 1.05rem; }
+}
+
 /* ================= MISE EN PAGE ================= */
 #layout { position: relative; flex: 1 1 auto; display: flex; min-height: 0; }
 
