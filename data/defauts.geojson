@@ -1,0 +1,102 @@
+{
+  "type": "FeatureCollection",
+  "name": "defauts",
+  "title": "Registre des défauts & anomalies",
+  "description": "Signalements manuels géolocalisés ; les défauts détectés automatiquement sont recalculés en direct depuis les données réseau.",
+  "generated": "2026-10-27T13:06:24",
+  "modified": "2026-10-27T13:06:24",
+  "_cartoeau": {
+    "note": "Données fictives de démonstration — ECLA Lons Agglo",
+    "projection": "WGS84 (EPSG:4326), longitude/latitude (RFC 7946)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "DEF-0001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5462,
+          46.6802
+        ]
+      },
+      "properties": {
+        "source": "manuel",
+        "categorie": "Canalisation",
+        "elementId": "",
+        "elementNom": "Conduite DN80 rue des Croisilles",
+        "secteur": "Secteur Centre-Ville",
+        "commune": "Lons-le-Saunier",
+        "type": "fuite",
+        "titre": "Affaissement de chaussée et suintement constatés",
+        "description": "Signalement agent voirie du 12/09/2026 : affaissement de 15 cm sur DN80 fonte, suintement permanent. Repérage acoustique positif.",
+        "gravite": "majeur",
+        "date_detection": "12/09/2026 08:15",
+        "statut_suivi": "resolu",
+        "source_ref": "DEF-0001",
+        "actions": [
+          {
+            "date": "12/09/2026 08:15",
+            "du": "—",
+            "vers": "Ouvert",
+            "acteur": "M. Girard",
+            "commentaire": "Création du dossier après signalement voirie."
+          },
+          {
+            "date": "15/09/2026 09:02",
+            "du": "Ouvert",
+            "vers": "En cours",
+            "acteur": "M. Chevalier",
+            "commentaire": "REP + DP autorisées, intervention planifiée S39."
+          },
+          {
+            "date": "01/10/2026 15:30",
+            "du": "En cours",
+            "vers": "En cours",
+            "acteur": "M. Chevalier",
+            "commentaire": "Colmatement réalisé, essai pression OK. Remise en état chaussée le 02/10."
+          },
+          {
+            "date": "02/10/2026 17:05",
+            "du": "En cours",
+            "vers": "Résolu (acquitté)",
+            "acteur": "admin",
+            "commentaire": "Acquittement après contrôle visuel et retour compteur QMA-3821-CEN (QMn revenu à la normale).",
+            "pieces": "Photos chantier + PV d'essai"
+          }
+        ],
+        "acquitte_le": "02/10/2026 17:05",
+        "id": "DEF-0001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "DEF-0002",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5572,
+          46.6912
+        ]
+      },
+      "properties": {
+        "source": "manuel",
+        "categorie": "Réseau",
+        "elementId": "",
+        "elementNom": "Bouche d'incendie BI n°128 — place de la Liberté",
+        "secteur": "Secteur Nord — Juvigny / Vernot",
+        "commune": "Lons-le-Saunier",
+        "type": "ouvrage",
+        "titre": "Chapeau de BI manquant, filet de raccordement endommagé",
+        "description": "Constat lors de la campagne annuelle d' vérification des BIC (03/08/2026). Mise en danger potentielle, remplacement du chapeau nécessaire.",
+        "gravite": "mineur",
+        "date_detection": "03/08/2026 14:40",
+        "statut_suivi": "ouvert",
+        "source_ref": "DEF-0002",
+        "actions": [],
+        "acquitte_le": null,
+        "id": "DEF-0002"
+      }
+    }
+  ]
+}

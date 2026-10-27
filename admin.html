@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration — Carto'Eau ECLA Agglo</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>" />
+
+  <!-- Police -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ============ ÉCRAN DE CONNEXION ============ -->
+  <div id="login-screen" class="login-screen">
+    <form id="login-form" class="login-card" autocomplete="off">
+      <div class="brand brand-login">
+        <div class="brand-logo" aria-hidden="true">
+          <span class="drop drop-a"></span>
+          <span class="drop drop-b"></span>
+          <span class="arc"></span>
+        </div>
+        <div class="brand-text">
+          <strong>ECLA</strong>
+          <span>Lons · Agglo</span>
+        </div>
+      </div>
+      <h1>Administration — Carto'Eau</h1>
+      <p class="login-sub">Espace réservé au gestionnaire du réseau.<br>Modifiez les données du réseau <strong>sans coder</strong>.</p>
+
+      <label class="field">
+        <span>Utilisateur</span>
+        <input type="text" id="login-user" placeholder="admin" required autofocus />
+      </label>
+      <label class="field">
+        <span>Mot de passe</span>
+        <input type="password" id="login-pass" placeholder="••••••" required />
+      </label>
+
+      <div id="login-error" class="login-error" hidden>Identifiant ou mot de passe incorrect.</div>
+      <button type="submit" class="btn-primary btn-block">Se connecter</button>
+      <a class="login-back" href="index.html">← Retour à la carte</a>
+      <p class="login-hint">Démo : utilisateur <code>admin</code> / mot de passe <code>admin</code></p>
+    </form>
+  </div>
+
+  <!-- ============ APPLICATION ADMIN ============ -->
+  <div id="admin-app" hidden>
+
+    <header id="header">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <span class="drop drop-a"></span>
+          <span class="drop drop-b"></span>
+          <span class="arc"></span>
+        </div>
+        <div class="brand-text">
+          <strong>ECLA</strong>
+          <span>Admin · Carto'Eau</span>
+        </div>
+      </div>
+      <div class="header-title">
+        <h1>Interface d'administration <span class="badge-no-code">No code</span></h1>
+        <p>Gestion des ouvrages et secteurs du réseau d'eau potable</p>
+      </div>
+      <nav class="header-actions">
+        <a id="btn-view-map" class="icon-btn" href="index.html" title="Voir la carte">🗺</a>
+        <a class="icon-btn" href="defauts.html" title="Registre des défauts & anomalies">⚠️</a>
+        <button id="btn-logout" class="icon-btn" title="Se déconnecter">⏻</button>
+      </nav>
+    </header>
+
+    <main class="admin-layout">
+
+      <!-- ---- Menu latéral ---- -->
+      <aside class="admin-side">
+        <nav id="admin-nav">
+          <button data-tab="tableau" class="nav-item active">📊 Tableau de bord</button>
+          <button data-tab="secteurs" class="nav-item">🎨 Secteurs</button>
+          <button data-tab="reservoirs" class="nav-item">🛢 Réservoirs</button>
+          <button data-tab="stations" class="nav-item">⚙ Stations</button>
+          <button data-tab="compteurs" class="nav-item">◉ Compteurs</button>
+          <button data-tab="parametres" class="nav-item">⚙️ Paramètres</button>
+        </nav>
+
+        <div class="side-help">
+          <h3>💡 Comment ça marche ?</h3>
+          <ol>
+            <li>Choisissez une catégorie dans le menu.</li>
+            <li>Cliquez sur un élément pour l'éditer, ou sur « Ajouter » pour en créer un nouveau.</li>
+            <li>Chaque champ modifié est <strong>enregistré automatiquement</strong> (aucun bouton à coder).</li>
+            <li>Ouvrez la carte (🗺) : vos modifications y apparaissent immédiatement.</li>
+          </ol>
+          <p id="dirty-note" class="dirty-note" hidden>✏️ Des modifications sont enregistrées localement sur ce poste.</p>
+        </div>
+      </aside>
+
+      <!-- ---- Contenu principal ---- -->
+      <section class="admin-main">
+
+        <!-- ===== Onglet Tableau de bord ===== -->
+        <div class="tab-panel" id="tab-tableau">
+          <h2>Vue d'ensemble du réseau</h2>
+          <div id="adm-kpis" class="adm-kpi-grid"></div>
+
+          <div class="adm-columns">
+            <div class="adm-card">
+              <h3>Alertes &amp; anomalies</h3>
+              <ul id="adm-alerts" class="alert-list"></ul>
+            </div>
+            <div class="adm-card">
+              <h3>Dernières interventions</h3>
+              <ul id="adm-maintenance" class="maint-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Onglets listes (remplis en JS) ===== -->
+        <div class="tab-panel" id="tab-secteurs" hidden>
+          <div class="panel-head"><h2>Secteurs de distribution</h2><button class="btn-primary" data-add="secteurs">＋ Ajouter un secteur</button></div>
+          <div id="list-secteurs" class="item-list"></div>
+          <div id="editor-secteurs" class="editor" hidden></div>
+        </div>
+
+        <div class="tab-panel" id="tab-reservoirs" hidden>
+          <div class="panel-head"><h2>Réservoirs</h2><button class="btn-primary" data-add="reservoirs">＋ Ajouter un réservoir</button></div>
+          <div id="list-reservoirs" class="item-list"></div>
+          <div id="editor-reservoirs" class="editor" hidden></div>
+        </div>
+
+        <div class="tab-panel" id="tab-stations" hidden>
+          <div class="panel-head"><h2>Stations</h2><button class="btn-primary" data-add="stations">＋ Ajouter une station</button></div>
+          <div id="list-stations" class="item-list"></div>
+          <div id="editor-stations" class="editor" hidden></div>
+        </div>
+
+        <div class="tab-panel" id="tab-compteurs" hidden>
+          <div class="panel-head"><h2>Compteurs de sectorisation</h2><button class="btn-primary" data-add="compteurs">＋ Ajouter un compteur</button></div>
+          <div id="list-compteurs" class="item-list"></div>
+          <div id="editor-compteurs" class="editor" hidden></div>
+        </div>
+
+        <!-- ===== Onglet Paramètres ===== -->
+        <div class="tab-panel" id="tab-parametres" hidden>
+          <h2>Paramètres</h2>
+
+          <div class="adm-card setting-card">
+            <h3>🔐 Sécurité</h3>
+            <p class="muted">Changez le mot de passe administrateur (actuellement : utilisateur <code id="cur-user">admin</code>).</p>
+            <div class="setting-row">
+              <label class="field"><span>Nouveau mot de passe</span><input type="password" id="new-pass" placeholder="Nouveau mot de passe" /></label>
+              <label class="field"><span>Confirmation</span><input type="password" id="new-pass2" placeholder="Retapez le mot de passe" /></label>
+              <button id="btn-change-pass" class="btn-primary">Mettre à jour</button>
+            </div>
+            <div id="pass-msg" class="inline-msg" hidden></div>
+          </div>
+
+          <div class="adm-card setting-card">
+            <h3>💾 Sauvegarde des données</h3>
+            <p class="muted">Exportez le réseau complet (données fictives + vos modifications) au format JSON, ou réimportez un fichier exporté.</p>
+            <div class="setting-row">
+              <button id="btn-export" class="btn-primary">⬇ Exporter en JSON</button>
+              <label class="btn-secondary file-btn">⬆ Importer un JSON<input type="file" id="import-file" accept=".json,application/json" hidden /></label>
+            </div>
+            <div id="io-msg" class="inline-msg" hidden></div>
+          </div>
+
+          <div class="adm-card setting-card danger-card">
+            <h3>♻ Réinitialisation</h3>
+            <p class="muted">Revenir au jeu de données fictif d'origine. Toutes vos modifications locales seront perdues.</p>
+            <button id="btn-reset" class="btn-danger">Réinitialiser toutes les données</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ---- Toast de confirmation ---- -->
+    <div id="toast" class="toast" hidden>✅ <span id="toast-text"></span></div>
+  </div>
+
+  <!-- Données + magasin partagés avec la carte -->
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
